@@ -34,8 +34,8 @@ class App extends Component {
 
   login = (username, accessToken, refreshToken) => {
     this.setState({ username: username, accessToken: accessToken, refreshToken: refreshToken, isAuth: true });
-    Cookies.set('refresh', refreshToken);
-    Cookies.set('username', username);
+    Cookies.set('refresh', refreshToken, {expires: 30});
+    Cookies.set('username', username, {expires: 30});
   }
 
   logout = () => {
