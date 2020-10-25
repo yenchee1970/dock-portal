@@ -17,9 +17,9 @@ class AuthPage extends Component {
   }
 
   submitHandler = event => {
-    console.log("onSubmit");
-    const { baseURL, login } = this.context;
     event.preventDefault();
+
+    const { baseURL, login } = this.context;
     const email = this.emailEl.current.value;
     const password = this.passwordEl.current.value;
 
