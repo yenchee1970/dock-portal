@@ -8,6 +8,5 @@ export default React.createContext({
     baseURL: '',
     login: (username, accessToken, refreshToken) => { },
     logout: () => { },
-    refresh: () => { },
-    isInitialized: false
+    refresh: () => { }
 });

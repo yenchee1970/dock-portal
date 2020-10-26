@@ -17,12 +17,7 @@ class App extends Component {
     refreshToken: null,
     accessToken: null,
     username: null,
-    isAuth: false,
-    baseURL: '',
-    login: (username, accessToken, refreshToken) => { },
-    logout: () => { },
-    refresh: () => { },
-    isInitialized: false
+    isAuth: false
   }
 
   isInitialized = false;
@@ -41,19 +36,21 @@ class App extends Component {
     if (refreshToken) {
       this.refresh_token(username, refreshToken)
         .then(access_token => {
-          if (access_token)
+          this.isInitialized = true;
+          if (access_token) {
             this.setState({
               refreshToken: refreshToken,
               username: username,
               isAuth: true,
-              accessToken: access_token,
-              isInitialized: true
+              accessToken: access_token
             });
+          }
           else
-            this.setState({ refreshToken: null, username: null, isInitialized: true });
+            this.setState({ refreshToken: null, username: null });
         });
     } else {
-      this.setState({ refreshToken: null, username: null, isInitialized: true });
+      this.isInitialized = true;
+      this.setState({ refreshToken: null, username: null });
     }
   }
 
@@ -97,7 +94,7 @@ class App extends Component {
   }
 
   render() {
-    if (!this.state.isInitialized) return null;
+    if (!this.isInitialized) return null;
     return (
       <BrowserRouter>
         <AuthContext.Provider value={this.state}>
