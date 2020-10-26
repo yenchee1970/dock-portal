@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
 import AuthContext from '../contexts/auth-context';
 import './MainNavigation.css';
@@ -18,19 +18,22 @@ const mainNavigation = props => (
 									<NavLink to="/auth">Authenticate</NavLink>
 								</li>
 							)}
-							<li>
-								<NavLink to="/org">Organization</NavLink>
-							</li>
-							<li>
-								<NavLink to="/user">User</NavLink>
-							</li>
-							<li>
-								<NavLink to="/dock">Dock</NavLink>
-							</li>
+
 							{context.isAuth && (
-								<li>
-									<button onClick={context.logout}>Logout</button>
-								</li>
+								<Fragment>
+									<li>
+										<NavLink to="/org">Organization</NavLink>
+									</li>
+									<li>
+										<NavLink to="/user">User</NavLink>
+									</li>
+									<li>
+										<NavLink to="/dock">Dock</NavLink>
+									</li>
+									<li>
+										<button onClick={context.logout}>Logout</button>
+									</li>
+								</Fragment>
 							)}
 						</ul>
 					</nav>
