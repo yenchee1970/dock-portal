@@ -45,8 +45,8 @@ class App extends Component {
 
   login = (username, accessToken, refreshToken) => {
     this.setState({ username: username, accessToken: accessToken, refreshToken: refreshToken, isAuth: true });
-    Cookies.set('refresh', refreshToken, { expires: 1 });
-    Cookies.set('username', username, { expires: 1 });
+    Cookies.set('refresh', refreshToken, { expires: 30 });
+    Cookies.set('username', username, { expires: 30 });
   }
 
   logout = () => {
@@ -70,7 +70,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state.isAuth);
     if (!this.state.isInitialized) return null;
     return (
       <BrowserRouter>
