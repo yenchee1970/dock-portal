@@ -5,8 +5,7 @@ export default React.createContext({
     accessToken: null,
     username: null,
     isAuth: false,
-    baseURL: '',
+    clientConn: null,
     login: (username, accessToken, refreshToken) => { },
-    logout: () => { },
-    refresh: () => { }
+    logout: () => { }
 });

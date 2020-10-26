@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './Auth.css';
 import AuthContext from '../contexts/auth-context';
-import axios from 'axios';
 
 class AuthPage extends Component {
   state = {
@@ -19,7 +18,7 @@ class AuthPage extends Component {
   submitHandler = event => {
     event.preventDefault();
 
-    const { baseURL, login } = this.context;
+    const { login, clientConn } = this.context;
     const email = this.emailEl.current.value;
     const password = this.passwordEl.current.value;
 
@@ -27,7 +26,7 @@ class AuthPage extends Component {
       return;
     }
 
-    axios.post(baseURL + '/client/login', { username: email, password: password })
+    clientConn.post('/client/login', { username: email, password: password })
       .then(data => {
         console.log(data);
         const { access_token, refresh_token } = data.data;

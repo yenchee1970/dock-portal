@@ -5,12 +5,15 @@ import MainNavigation from './components/MainNavigation';
 import AuthContext from './contexts/auth-context';
 import AuthPage from './pages/Auth';
 import Cookies from 'js-cookie';
-import axios from 'axios';
+import Axios from 'axios';
 import OrgPage from './pages/Organization';
 import UserPage from './pages/User';
 import DockPage from './pages/Dock';
 
 const COOKIES_EXPIRES = 10;
+const BASE_URL = 'https://dock-api.dyndns.org';
+
+var that;
 
 class App extends Component {
   state = {
@@ -24,10 +27,36 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state.baseURL = 'https://dock-api.dyndns.org';
+    that = this; // For axios callback use
     this.state.login = this.login;
     this.state.logout = this.logout;
-    this.state.refresh = this.refresh;
+    this.state.clientConn = new Axios.create();
+    this.state.clientConn.defaults.baseURL = BASE_URL;
+    this.state.clientConn.interceptors.request.use(
+      config => {
+        const token = that.state.accessToken;
+        if (token) {
+          config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+      },
+      error => {
+        Promise.reject(error)
+      });
+    this.state.clientConn.interceptors.response.use((response) => {
+      return response;
+    }, async function (error) {
+      let originalRequest = error.config;
+      if (error.response.status === 401 && error.response.data.error === "Token expired!" && !originalRequest._retry) {
+        originalRequest._retry = true;
+        if (that.state.refreshToken) {
+          const access_token = await that.refresh_token(that.state.username, that.state.refreshToken);
+          that.setState({ accessToken: access_token });
+          return that.state.clientConn(originalRequest);
+        }
+      }
+      return Promise.reject(error);
+    });
   }
 
   componentDidMount() {
@@ -39,7 +68,6 @@ class App extends Component {
           this.isInitialized = true;
           if (access_token) {
             this.setState({
-              refreshToken: refreshToken,
               username: username,
               isAuth: true,
               accessToken: access_token
@@ -66,28 +94,29 @@ class App extends Component {
     Cookies.remove('username');
   }
 
-  refresh = () => {
-    this.refresh_token(this.state.username, this.state.refreshToken)
-      .then(access_token => {
-        if (access_token)
-          this.setState({ accessToken: access_token });
-        else
-          this.logout();
-      })
-  }
-
-  refresh_token(username, refreshToken) {
-    console.log("Refreshing")
+  async refresh_token(username, refreshToken) {
+    console.log("Token refreshing")
     return new Promise((resolve, reject) => {
-      axios.post(this.state.baseURL + '/client/refresh', { username: username }, { headers: { 'Authorization': `Bearer ${refreshToken}` } })
+      fetch(BASE_URL + '/client/refresh', {
+        method: 'POST',
+        body: JSON.stringify({ username: username }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${refreshToken}`
+        }
+      })
+        .then(res => {
+          return res.json();
+        })
         .then(data => {
-          console.log(data.data);
-          Cookies.set("refresh", data.data.refresh_token, { expires: COOKIES_EXPIRES });
+          console.log(data);
+          that.setState({ refreshToken: data.refresh_token });
+          Cookies.set("refresh", data.refresh_token, { expires: COOKIES_EXPIRES });
           Cookies.set('username', username, { expires: COOKIES_EXPIRES });
-          resolve(data.data.access_token);
+          resolve(data.access_token);
         })
         .catch(error => {
-          console.log(error.response);
+          console.log(error);
           resolve(null);
         });
     });

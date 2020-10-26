@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import AuthContext from '../contexts/auth-context';
-import axios from 'axios';
 import Backdrop from '../components/Backdrop';
 import Modal from '../components/Modal';
 import './User.css'
@@ -12,7 +11,6 @@ class UserPage extends Component {
         count: 0,
         page: 0,
         users: [],
-
     }
 
     static contextType = AuthContext;
@@ -25,28 +23,32 @@ class UserPage extends Component {
         this.nameElRef = React.createRef();
     }
 
-    componentDidMount() {
-        const { baseURL, accessToken } = this.context;
+    async componentDidMount() {
+        let success = await this.fetchUsers()
+        console.log("Fetching data is ", success);
+        if (!success) this.context.logout();
+    }
 
-        axios.get(baseURL + '/admin/user', { headers: { "Authorization": `Bearer ${accessToken}` } })
-            .then(data => {
-                console.log(data);
-                this.setState({
-                    users: data.data.result.rows,
-                    count: data.data.result.count,
-                    isLoading: false
+    async fetchUsers() {
+        const { clientConn } = this.context;
+
+        return new Promise((resolve, reject) => {
+            clientConn.get('/admin/user')
+                .then(data => {
+                    console.log(data);
+                    this.setState({
+                        users: data.data.result.rows,
+                        count: data.data.result.count,
+                        isLoading: false
+                    })
+                    resolve(true);
                 })
-            })
-            .catch(error => {
-                console.log(error.response);
-                if (error.response.data.error === "Token expired!") {
-                    this.context.refresh();
-                    window.location.reload();
-                } else {
+                .catch(error => {
+                    console.log(error.response);
                     alert(error.response.data.error);
-                    this.context.logout();
-                }
-            });
+                    resolve(false);
+                });
+        });
     }
 
     startCreatingUserHandler = () => {
