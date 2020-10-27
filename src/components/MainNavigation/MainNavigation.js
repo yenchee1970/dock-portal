@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
-import AuthContext from '../contexts/auth-context';
+import AuthContext from '../../contexts/auth-context';
 import './MainNavigation.css';
 
 const mainNavigation = props => (

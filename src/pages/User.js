@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import AuthContext from '../contexts/auth-context';
-import Backdrop from '../components/Backdrop';
-import Modal from '../components/Modal';
-import Spinner from '../components/Spinner';
-import UserList from '../components/UserList';
+import Backdrop from '../components/Backdrop/Backdrop';
+import Modal from '../components/Modal/Modal';
+import Spinner from '../components/Spinner/Spinner';
+import UserList from '../components/UserList/UserList';
 import './User.css'
 
 class UserPage extends Component {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import './App.css';
-import MainNavigation from './components/MainNavigation';
+import MainNavigation from './components/MainNavigation/MainNavigation';
 import AuthContext from './contexts/auth-context';
 import AuthPage from './pages/Auth';
 import Cookies from 'js-cookie';
