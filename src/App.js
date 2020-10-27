@@ -90,8 +90,8 @@ class App extends Component {
     this.refreshToken = refreshToken;
     this.accessToken = accessToken;
     this.setState({ username: username, isAuth: true });
-    Cookies.set('refresh', refreshToken, { expires: COOKIES_EXPIRES });
-    Cookies.set('username', username, { expires: COOKIES_EXPIRES });
+    Cookies.set('refresh', refreshToken, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: true });
+    Cookies.set('username', username, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: true });
   }
 
   logout = () => {
@@ -117,8 +117,8 @@ class App extends Component {
         })
         .then(data => {
           console.log(data);
-          Cookies.set("refresh", data.refresh_token, { expires: COOKIES_EXPIRES });
-          Cookies.set('username', username, { expires: COOKIES_EXPIRES });
+          Cookies.set("refresh", data.refresh_token, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: true });
+          Cookies.set('username', username, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: true });
           resolve({ access_token: data.access_token, refresh_token: data.refresh_token });
         })
         .catch(error => {
