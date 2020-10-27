@@ -11,13 +11,15 @@ import UserPage from './pages/User';
 import DockPage from './pages/Dock';
 
 const COOKIES_EXPIRES = 10;
-const BASE_URL = 'https://dock-api.dyndns.org';
+const COOKIES_SECURE = false;
+const BASE_URL = 'https://dock-api.dyndns.org/v1';
 
 var that;
 
 class App extends Component {
   state = {
     username: null,
+    role: null,
     isAuth: false
   }
 
@@ -70,10 +72,7 @@ class App extends Component {
           if (tokens) {
             this.accessToken = tokens.access_token;
             this.refreshToken = tokens.refresh_token;
-            this.setState({
-              username: username,
-              isAuth: true,
-            });
+            this.setState({ username: username, isAuth: true, role: tokens.role });
           } else {
             this.accessToken = this.refreshToken = null;
             this.setState({ username: null, isAuth: false });
@@ -86,12 +85,12 @@ class App extends Component {
     }
   }
 
-  login = (username, accessToken, refreshToken) => {
+  login = (username, accessToken, refreshToken, role) => {
     this.refreshToken = refreshToken;
     this.accessToken = accessToken;
-    this.setState({ username: username, isAuth: true });
-    Cookies.set('refresh', refreshToken, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: true });
-    Cookies.set('username', username, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: true });
+    this.setState({ username: username, isAuth: true, role: role });
+    Cookies.set('refresh', refreshToken, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: COOKIES_SECURE });
+    Cookies.set('username', username, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: COOKIES_SECURE });
   }
 
   logout = () => {
@@ -117,9 +116,9 @@ class App extends Component {
         })
         .then(data => {
           console.log(data);
-          Cookies.set("refresh", data.refresh_token, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: true });
-          Cookies.set('username', username, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: true });
-          resolve({ access_token: data.access_token, refresh_token: data.refresh_token });
+          Cookies.set("refresh", data.refresh_token, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: COOKIES_SECURE });
+          Cookies.set('username', username, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: COOKIES_SECURE });
+          resolve({ access_token: data.access_token, refresh_token: data.refresh_token, role: data.role });
         })
         .catch(error => {
           console.log(error);
