@@ -14,7 +14,8 @@ code {
 
 .form-control label,
 .form-control input,
-.form-control textarea {
+.form-control textarea,
+.form-control p {
     width: 100%;
     display: block;
 }
@@ -47,3 +48,9 @@ code {
     background: #01a7a7;
     border-color: #01a7a7;
 }
+
+table {
+  margin: 2rem auto;
+  border-collapse: collapse;
+}
+

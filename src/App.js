@@ -17,13 +17,13 @@ var that;
 
 class App extends Component {
   state = {
-    refreshToken: null,
-    accessToken: null,
     username: null,
     isAuth: false
   }
 
   isInitialized = false;
+  refreshToken = null;
+  accessToken = null;
 
   constructor(props) {
     super(props);
@@ -34,7 +34,7 @@ class App extends Component {
     this.state.clientConn.defaults.baseURL = BASE_URL;
     this.state.clientConn.interceptors.request.use(
       config => {
-        const token = that.state.accessToken;
+        const token = that.accessToken;
         if (token) {
           config.headers['Authorization'] = `Bearer ${token}`;
         }
@@ -49,9 +49,10 @@ class App extends Component {
       let originalRequest = error.config;
       if (error.response.status === 401 && error.response.data.error === "Token expired!" && !originalRequest._retry) {
         originalRequest._retry = true;
-        if (that.state.refreshToken) {
-          const access_token = await that.refresh_token(that.state.username, that.state.refreshToken);
-          that.setState({ accessToken: access_token });
+        if (that.refreshToken) {
+          const tokens = await that.refresh_token(that.state.username, that.refreshToken);
+          that.accessToken = tokens.access_token;
+          that.refreshToken = tokens.refresh_token;
           return that.state.clientConn(originalRequest);
         }
       }
@@ -64,32 +65,38 @@ class App extends Component {
     let username = Cookies.get('username');
     if (refreshToken) {
       this.refresh_token(username, refreshToken)
-        .then(access_token => {
+        .then(tokens => {
           this.isInitialized = true;
-          if (access_token) {
+          if (tokens) {
+            this.accessToken = tokens.access_token;
+            this.refreshToken = tokens.refresh_token;
             this.setState({
               username: username,
               isAuth: true,
-              accessToken: access_token
             });
+          } else {
+            this.accessToken = this.refreshToken = null;
+            this.setState({ username: null, isAuth: false });
           }
-          else
-            this.setState({ refreshToken: null, username: null });
         });
     } else {
       this.isInitialized = true;
-      this.setState({ refreshToken: null, username: null });
+      this.accessToken = this.refreshToken = null;
+      this.setState({ username: null, isAuth: false });
     }
   }
 
   login = (username, accessToken, refreshToken) => {
-    this.setState({ username: username, accessToken: accessToken, refreshToken: refreshToken, isAuth: true });
+    this.refreshToken = refreshToken;
+    this.accessToken = accessToken;
+    this.setState({ username: username, isAuth: true });
     Cookies.set('refresh', refreshToken, { expires: COOKIES_EXPIRES });
     Cookies.set('username', username, { expires: COOKIES_EXPIRES });
   }
 
   logout = () => {
-    this.setState({ username: null, accessToken: null, refreshToken: null, isAuth: false });
+    this.refreshToken = this.accessToken = null;
+    this.setState({ username: null, isAuth: false });
     Cookies.remove('refresh');
     Cookies.remove('username');
   }
@@ -110,10 +117,9 @@ class App extends Component {
         })
         .then(data => {
           console.log(data);
-          that.setState({ refreshToken: data.refresh_token });
           Cookies.set("refresh", data.refresh_token, { expires: COOKIES_EXPIRES });
           Cookies.set('username', username, { expires: COOKIES_EXPIRES });
-          resolve(data.access_token);
+          resolve({ access_token: data.access_token, refresh_token: data.refresh_token });
         })
         .catch(error => {
           console.log(error);
