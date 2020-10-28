@@ -247,11 +247,11 @@ class UserPage extends Component {
                             </div>
                             <div className="form-control">
                                 <label htmlFor="password">Password</label>
-                                <input type="password" id="password" onChange={this.onInputChange} />
+                                <input type="password" id="password" name="password" onChange={this.onInputChange} />
                             </div>
                             <div className="form-control">
                                 <label htmlFor="confirm_password">Verify Password</label>
-                                <input type="password" id="confirm_password" onChange={this.onInputChange} />
+                                <input type="password" id="confirm_password" name="confirm_password" onChange={this.onInputChange} />
                             </div>
                             <div>
                                 <input type="radio" name="role" value="Admin" checked={this.state.role === "Admin"} onChange={this.onInputChange} /> Admin
