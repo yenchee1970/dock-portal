@@ -18,6 +18,8 @@ class UserPage extends Component {
 
     static contextType = AuthContext;
 
+    isActive = true;
+
     constructor(props) {
         super(props);
         this.state.email = this.state.name = this.state.password = this.state.confirm_password = this.state.role = null;
@@ -37,7 +39,7 @@ class UserPage extends Component {
         this.setState({ isLoading: true });
         let data = await this.fetchUsers();
         console.log("Fetching data is ", data);
-        if (data)
+        if (this.isActive && data)
             this.setState({ users: data.data.result.rows, count: data.data.result.count, isLoading: false });
     }
 
@@ -62,7 +64,6 @@ class UserPage extends Component {
         return new Promise((resolve, reject) => {
             clientConn.get('/admin/user/' + id)
                 .then(data => {
-                    console.log(data);
                     resolve(data.data.result);
                 })
                 .catch(error => {
@@ -83,7 +84,6 @@ class UserPage extends Component {
             if (role) body = { ...body, role: role };
             clientConn.post('/admin/user', body)
                 .then(data => {
-                    console.log(data);
                     resolve(true);
                 })
                 .catch(error => {
@@ -101,10 +101,9 @@ class UserPage extends Component {
             if (name) body = { ...body, name: name };
             if (password) body = { ...body, password: password };
             if (role) body = { ...body, role: role };
-            console.log(body);
+
             clientConn.post('/admin/user/' + id, body)
                 .then(data => {
-                    console.log(data);
                     resolve(true);
                 })
                 .catch(error => {
@@ -117,12 +116,9 @@ class UserPage extends Component {
     async deleteUser(id) {
         const { clientConn } = this.context;
 
-        console.log("Deleting user");
-
         return new Promise((resolve, reject) => {
             clientConn.delete('/admin/user/' + id)
                 .then(data => {
-                    console.log(data);
                     resolve(true);
                 })
                 .catch(error => {
@@ -182,6 +178,10 @@ class UserPage extends Component {
 
     onInputChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
+    }
+
+    componentWillUnmount() {
+        this.isActive = false;
     }
 
     render() {

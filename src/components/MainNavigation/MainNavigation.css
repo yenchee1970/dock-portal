@@ -12,9 +12,21 @@
     box-sizing: border-box;
   }
 
-.main-navigation__logo h1 {
+.main-navigation__logo {
+    width: 30%;
+    display: flex;
+    align-items: baseline;
+    margin-top: 1rem;
+}
+
+.main-navigation__logo img {
     margin: 0;
-    font-size: 1.5rem;
+    width: 8rem;
+}
+
+.main-navigation__logo h1 {
+    margin-left: 5px;
+    font-size: 1.2rem;
     color: #ffffff;
 }
 

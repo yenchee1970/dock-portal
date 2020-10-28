@@ -102,7 +102,6 @@ class App extends Component {
   }
 
   async refresh_token(username, refreshToken) {
-    console.log("Token refreshing")
     return new Promise((resolve, reject) => {
       fetch(BASE_URL + '/client/refresh', {
         method: 'POST',
@@ -116,7 +115,7 @@ class App extends Component {
           return res.json();
         })
         .then(data => {
-          console.log(data);
+          console.log("Token refresh ", data);
           Cookies.set("refresh", data.refresh_token, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: COOKIES_SECURE });
           Cookies.set('username', username, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: COOKIES_SECURE });
           resolve({ access_token: data.access_token, refresh_token: data.refresh_token, role: data.role });

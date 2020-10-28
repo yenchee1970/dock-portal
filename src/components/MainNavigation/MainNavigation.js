@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
 import AuthContext from '../../contexts/auth-context';
 import './MainNavigation.css';
+import logo from '../../pages/logo.png';
 
 const mainNavigation = props => (
 	<AuthContext.Consumer>
@@ -9,6 +10,7 @@ const mainNavigation = props => (
 			return (
 				<header className="main-navigation">
 					<div className="main-navigation__logo">
+						<img src={logo} alt="logo" />
 						<h1>Dock Portal</h1>
 					</div>
 					<nav className="main-navigation__items">
@@ -18,7 +20,6 @@ const mainNavigation = props => (
 									<NavLink to="/auth">Authenticate</NavLink>
 								</li>
 							)}
-
 							{context.isAuth && (
 								<Fragment>
 									<li>

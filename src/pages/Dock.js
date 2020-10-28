@@ -20,6 +20,8 @@ class DockPage extends Component {
 
   static contextType = AuthContext;
 
+  isActive = true;
+
   constructor(props) {
     super(props);
     this.state.macaddr = this.state.bssid5GL = this.state.ssid5GL = this.state.bssid2G = this.state.ssid2G = "";
@@ -39,7 +41,7 @@ class DockPage extends Component {
     this.setState({ isLoading: true });
     let data = await this.fetchDocks();
     console.log("Fetching data is ", data);
-    if (data)
+    if (this.isActive && data)
       this.setState({ docks: data.data.result.rows, count: data.data.result.count, isLoading: false });
   }
 
@@ -64,7 +66,6 @@ class DockPage extends Component {
     return new Promise((resolve, reject) => {
       clientConn.get('/admin/dock/' + id)
         .then(data => {
-          console.log(data);
           resolve(data.data.result);
         })
         .catch(error => {
@@ -84,7 +85,6 @@ class DockPage extends Component {
       if (bssid2g) body = { ...body, bssid2g };
       clientConn.post('/admin/dock', body)
         .then(data => {
-          console.log(data);
           resolve(true);
         })
         .catch(error => {
@@ -100,7 +100,6 @@ class DockPage extends Component {
     return new Promise((resolve, reject) => {
       clientConn.delete('/admin/dock/' + id)
         .then(data => {
-          console.log(data);
           resolve(true);
         })
         .catch(error => {
@@ -122,7 +121,6 @@ class DockPage extends Component {
     return new Promise((resolve, reject) => {
       clientConn.post('/admin/dock/' + id, body)
         .then(data => {
-          console.log(data);
           resolve(true);
         })
         .catch(error => {
@@ -138,7 +136,6 @@ class DockPage extends Component {
     return new Promise((resolve, reject) => {
       clientConn.post('/admin/unpair', { mac })
         .then(data => {
-          console.log(data);
           resolve(true);
         })
         .catch(error => {
@@ -225,6 +222,10 @@ class DockPage extends Component {
         update = true;
     }
     if (update) this.setState({ [e.target.name]: e.target.value });
+  }
+
+  componentWillUnmount() {
+    this.isActive = false;
   }
 
   render() {
