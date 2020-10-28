@@ -9,6 +9,7 @@ import Axios from 'axios';
 import OrgPage from './pages/Organization';
 import UserPage from './pages/User';
 import DockPage from './pages/Dock';
+import PairPage from './pages/Pair';
 
 const COOKIES_EXPIRES = 10;
 const COOKIES_SECURE = false;
@@ -140,7 +141,8 @@ class App extends Component {
               {!this.state.isAuth && <Route path="/auth" component={AuthPage} />}
               {this.state.isAuth && <Route path="/org" component={OrgPage} />}
               {this.state.isAuth && <Route path="/user" component={UserPage} />}
-              {this.state.isAuth && <Route path='/dock' component={DockPage} />}
+              {this.state.isAuth && <Route path="/dock" component={DockPage} />}
+              {this.state.isAuth && <Route path="/pair" component={PairPage} />}
               {!this.state.isAuth && <Redirect from="/" to="/auth" />}
             </Switch>
           </main>

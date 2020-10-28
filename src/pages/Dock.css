@@ -1,0 +1,19 @@
+.dock-control {
+  text-align: center;
+  border: 1px solid #5101d1;
+  padding: 1rem;
+  margin: 2rem auto;
+  width: 30rem;
+  max-width: 80%;
+}
+
+.strong-text {
+  color: red;
+}
+
+.dock-owner p {
+  display: block;
+  border: 1px solid black;
+  padding-left: 0.25rem;
+}
+
