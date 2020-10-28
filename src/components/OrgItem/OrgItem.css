@@ -1,4 +1,4 @@
-.dock-btn {
+.org-btn {
   background: #01d1d1;
   font: inherit;
   border: 1px solid #01d1d1;
@@ -13,7 +13,7 @@
   vertical-align: middle;
 }
 
-.dock-btn:hover {
+.org-btn:hover {
   background: #01a7a7;
   border-color: #01a7a7;
 }

@@ -243,7 +243,7 @@ class UserPage extends Component {
                             )}
                             <div className="form-control">
                                 <label htmlFor="name">Full Name</label>
-                                <input type="text" id="name" value={this.state.name} onChange={this.onInputChange} />
+                                <input type="text" id="name" name="name" value={this.state.name} onChange={this.onInputChange} />
                             </div>
                             <div className="form-control">
                                 <label htmlFor="password">Password</label>

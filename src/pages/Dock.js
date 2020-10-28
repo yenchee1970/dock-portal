@@ -326,7 +326,7 @@ class DockPage extends Component {
         { this.state.isLoading ? (<Spinner />) : (
           <DockList
             docks={this.state.docks}
-            onClickUser={this.onClickDock}
+            onClickDock={this.onClickDock}
           />)
         }
       </Fragment>

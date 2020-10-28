@@ -17,6 +17,7 @@
     display: flex;
     align-items: baseline;
     margin-top: 1rem;
+    cursor: default;
 }
 
 .main-navigation__logo img {

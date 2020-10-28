@@ -14,8 +14,8 @@ const dockItem = props => {
                 <td>{props.dock.sourceIP}</td>
                 <td>{new Date(props.dock.updatedAt).toLocaleString()}</td>
                 <td>
-                    <button className="dock-btn" onClick={props.onClickUser.bind(this, props.dock.id, "edit")}>Edit</button>
-                    <button className="dock-btn" onClick={props.onClickUser.bind(this, props.dock.id, "delete")}>Delete</button>
+                    <button className="dock-btn" onClick={props.onClickDock.bind(this, props.dock.id, "edit")}>Edit</button>
+                    <button className="dock-btn" onClick={props.onClickDock.bind(this, props.dock.id, "delete")}>Delete</button>
                 </td>
             </tr>
         </Fragment>

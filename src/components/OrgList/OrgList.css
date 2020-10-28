@@ -1,9 +1,9 @@
-.user-list {
+.org-list {
   height: 80%;
   overflow: auto;
 }
 
-.user-list th {
+.org-list th {
   background-color: rgb(25, 190, 255);
   height: 3rem;
   text-align: center;
@@ -12,7 +12,7 @@
   padding-right: 0.5rem;
 }
 
-.user-list td {
+.org-list td {
   border: 1px solid #5101d1;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
@@ -21,10 +21,10 @@
   height: 2rem;
 }
 
-.user-list tr:hover {
+.org-list tr:hover {
   background-color: #f5f5f5;
 }
 
-.user-list tr:nth-child(even) {
+.org-list tr:nth-child(even) {
   background-color: #f2f2f2;
 }
