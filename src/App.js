@@ -81,8 +81,14 @@ class App extends Component {
   }
 
   logout = () => {
-    this.accessToken = null;
-    this.setState({ username: null, isAuth: false });
+    fetch(BASE_URL + '/client/logout', {
+      method: 'GET',
+      credentials: 'include'
+    })
+      .finally(() => {
+        this.accessToken = null;
+        this.setState({ username: null, isAuth: false });
+      });
   }
 
   async refresh_token() {
@@ -91,15 +97,10 @@ class App extends Component {
       fetch(BASE_URL + '/client/refresh', {
         method: 'GET',
         credentials: 'include'
-        // body: JSON.stringify({ username: username }),
-        // headers: {
-        //   'Content-Type': 'application/json',
-        //   'Authorization': `Bearer ${refreshToken}`
-        // }
       })
         .then(res => {
           console.log("refresh_token ", res);
-          if (res.ok)  return res.json(); else throw new Error(res.statusText);
+          if (res.ok) return res.json(); else throw new Error(res.statusText);
         })
         .then(data => {
           console.log("Token refresh ", data);
