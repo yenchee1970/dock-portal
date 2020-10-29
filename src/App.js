@@ -62,13 +62,14 @@ class App extends Component {
   }
 
   componentDidMount() {
-    let username = localStorage.getItem('username');
-    console.log("App mount ", username);
     this.refresh_token()
       .then(tokens => {
         this.isInitialized = true;
         if (tokens) {
           this.accessToken = tokens.access_token;
+          let decodedToken = JSON.parse(atob(tokens.access_token.split(".")[1]));
+          let username = decodedToken.email;
+          console.log("App mount ", username);
           this.setState({ username: username, isAuth: true, role: tokens.role });
         } else {
           this.accessToken = null;
@@ -78,7 +79,6 @@ class App extends Component {
   }
 
   login = (username, accessToken, role) => {
-    localStorage.setItem('username', username);
     this.accessToken = accessToken;
     this.setState({ username: username, isAuth: true, role: role });
   }
