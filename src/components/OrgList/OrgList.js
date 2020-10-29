@@ -3,7 +3,7 @@ import OrgItem from '../OrgItem/OrgItem';
 import './OrgList.css';
 
 const orgList = props => (
-    <div className="user-list">
+    <div className="org-list">
         <table>
             <thead>
                 <tr>
