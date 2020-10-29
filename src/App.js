@@ -89,8 +89,8 @@ class App extends Component {
     console.log("refreshing token");
     return new Promise((resolve, reject) => {
       fetch(BASE_URL + '/client/refresh', {
-        method: 'POST'
-        // method: 'POST',
+        method: 'GET',
+        credentials: 'include'
         // body: JSON.stringify({ username: username }),
         // headers: {
         //   'Content-Type': 'application/json',
