@@ -16,6 +16,7 @@ const dockList = props => (
                         key={dock.id}
                         dock={dock}
                         onClickDock={props.onClickDock}
+                        canDelete={props.canDelete}
                     />
                 )
             })}

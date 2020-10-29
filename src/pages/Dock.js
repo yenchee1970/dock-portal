@@ -327,6 +327,7 @@ class DockPage extends Component {
           <DockList
             docks={this.state.docks}
             onClickDock={this.onClickDock}
+            canDelete
           />)
         }
       </Fragment>
