@@ -4,7 +4,6 @@ import './App.css';
 import MainNavigation from './components/MainNavigation/MainNavigation';
 import AuthContext from './contexts/auth-context';
 import AuthPage from './pages/Auth';
-import Cookies from 'js-cookie';
 import Axios from 'axios';
 import OrgPage from './pages/Organization';
 import UserPage from './pages/User';
@@ -60,7 +59,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    let username = Cookies.get('username');
+    let username = localStorage.getItem('username');
     console.log("App mount ", username);
     this.refresh_token()
       .then(tokens => {
@@ -76,6 +75,7 @@ class App extends Component {
   }
 
   login = (username, accessToken, role) => {
+    localStorage.setItem('username', username);
     this.accessToken = accessToken;
     this.setState({ username: username, isAuth: true, role: role });
   }
@@ -98,7 +98,8 @@ class App extends Component {
         // }
       })
         .then(res => {
-          return res.json();
+          console.log("refresh_token ", res);
+          if (res.ok)  return res.json(); else throw new Error(res.statusText);
         })
         .then(data => {
           console.log("Token refresh ", data);
