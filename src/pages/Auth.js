@@ -15,10 +15,42 @@ class AuthPage extends Component {
     this.passwordEl = React.createRef();
   }
 
+  switchModeHandler = () => {
+    this.setState(prevState => {
+      return { isLogin: !prevState.isLogin };
+    })
+  }
+
+
+  handleSignup(email, password) {
+    const { clientConn } = this.context;
+
+    clientConn.post('/client/user', { username: email, password: password })
+      .then(() => {
+        alert(`User ${email} is created successfully!`);
+        this.setState({ isLogin: true });
+      })
+      .catch(error => {
+        alert(error.response.data.error);
+      })
+  }
+
+  handleLogin(email, password) {
+    const { login, clientConn } = this.context;
+
+    clientConn.post('/client/login', { username: email, password: password }, { withCredentials: true })
+      .then(data => {
+        const { access_token, role } = data.data;
+        login(email, access_token, role);
+      })
+      .catch(error => {
+        alert(error.response.data.error);
+      });
+  }
+
   submitHandler = event => {
     event.preventDefault();
 
-    const { login, clientConn } = this.context;
     const email = this.emailEl.current.value;
     const password = this.passwordEl.current.value;
 
@@ -26,16 +58,10 @@ class AuthPage extends Component {
       return;
     }
 
-    clientConn.post('/client/login', { username: email, password: password }, { withCredentials: true})
-      .then(data => {
-        console.log("Login ", data);
-        const { access_token, role } = data.data;
-        login(email, access_token, role);
-      })
-      .catch(error => {
-        console.log(error.response);
-        alert(error.response.data.error);
-      });
+    if (this.state.isLogin)
+      this.handleLogin(email, password);
+    else
+      this.handleSignup(email, password);
   }
 
   render() {
@@ -50,6 +76,9 @@ class AuthPage extends Component {
       </div>
       <div className="form-actions">
         <button type="submit">Submit</button>
+        <button type="button" onClick={this.switchModeHandler}>
+          Switch to {this.state.isLogin ? "Signup" : "Login"}
+        </button>
       </div>
     </form>
   }
