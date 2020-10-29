@@ -9,6 +9,9 @@ import OrgPage from './pages/Organization';
 import UserPage from './pages/User';
 import DockPage from './pages/Dock';
 import PairPage from './pages/Pair';
+import NormalUserPage from './pages/UserPage/User';
+import NormalDockPage from './pages/UserPage/Dock';
+import NormalPairPage from './pages/UserPage/Pair';
 
 const BASE_URL = 'https://dock-api.dyndns.org/v1';
 
@@ -124,10 +127,13 @@ class App extends Component {
               {this.state.isAuth && <Redirect from="/" to="/user" exact />}
               {this.state.isAuth && <Redirect from="/auth" to="/user" exact />}
               {!this.state.isAuth && <Route path="/auth" component={AuthPage} />}
-              {this.state.isAuth && <Route path="/org" component={OrgPage} />}
-              {this.state.isAuth && <Route path="/user" component={UserPage} />}
-              {this.state.isAuth && <Route path="/dock" component={DockPage} />}
-              {this.state.isAuth && <Route path="/pair" component={PairPage} />}
+              {this.state.isAuth && this.state.role === 'Admin' && <Route path="/org" component={OrgPage} />}
+              {this.state.isAuth && this.state.role === 'Admin' && <Route path="/user" component={UserPage} />}
+              {this.state.isAuth && this.state.role === 'Admin' && <Route path="/dock" component={DockPage} />}
+              {this.state.isAuth && this.state.role === 'Admin' && <Route path="/pair" component={PairPage} />}
+              {this.state.isAuth && this.state.role === 'User' && <Route path="/user" component={NormalUserPage} />}
+              {this.state.isAuth && this.state.role === 'User' && <Route path="/dock" component={NormalDockPage} />}
+              {this.state.isAuth && this.state.role === 'User' && <Route path="/pair" component={NormalPairPage} />}
               {!this.state.isAuth && <Redirect from="/" to="/auth" />}
             </Switch>
           </main>
