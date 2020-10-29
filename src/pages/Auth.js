@@ -29,8 +29,8 @@ class AuthPage extends Component {
     clientConn.post('/client/login', { username: email, password: password })
       .then(data => {
         console.log("Login ", data);
-        const { access_token, refresh_token, role } = data.data;
-        login(email, access_token, refresh_token, role);
+        const { access_token, role } = data.data;
+        login(email, access_token, role);
       })
       .catch(error => {
         console.log(error.response);

@@ -11,8 +11,6 @@ import UserPage from './pages/User';
 import DockPage from './pages/Dock';
 import PairPage from './pages/Pair';
 
-const COOKIES_EXPIRES = 10;
-const COOKIES_SECURE = false;
 const BASE_URL = 'https://dock-api.dyndns.org/v1';
 
 var that;
@@ -25,7 +23,6 @@ class App extends Component {
   }
 
   isInitialized = false;
-  refreshToken = null;
   accessToken = null;
 
   constructor(props) {
@@ -52,10 +49,9 @@ class App extends Component {
       let originalRequest = error.config;
       if (error.response.status === 401 && error.response.data.error === "Token expired!" && !originalRequest._retry) {
         originalRequest._retry = true;
-        if (that.refreshToken) {
-          const tokens = await that.refresh_token(that.state.username, that.refreshToken);
+        let tokens = await that.refresh_token();
+        if (tokens) {
           that.accessToken = tokens.access_token;
-          that.refreshToken = tokens.refresh_token;
           return that.state.clientConn(originalRequest);
         }
       }
@@ -64,64 +60,52 @@ class App extends Component {
   }
 
   componentDidMount() {
-    let refreshToken = Cookies.get('refresh');
     let username = Cookies.get('username');
-    if (refreshToken) {
-      this.refresh_token(username, refreshToken)
-        .then(tokens => {
-          this.isInitialized = true;
-          if (tokens) {
-            this.accessToken = tokens.access_token;
-            this.refreshToken = tokens.refresh_token;
-            this.setState({ username: username, isAuth: true, role: tokens.role });
-          } else {
-            this.accessToken = this.refreshToken = null;
-            this.setState({ username: null, isAuth: false });
-          }
-        });
-    } else {
-      this.isInitialized = true;
-      this.accessToken = this.refreshToken = null;
-      this.setState({ username: null, isAuth: false });
-    }
+    console.log("App mount ", username);
+    this.refresh_token()
+      .then(tokens => {
+        this.isInitialized = true;
+        if (tokens) {
+          this.accessToken = tokens.access_token;
+          this.setState({ username: username, isAuth: true, role: tokens.role });
+        } else {
+          this.accessToken = null;
+          this.setState({ username: null, isAuth: false });
+        }
+      });
   }
 
-  login = (username, accessToken, refreshToken, role) => {
-    this.refreshToken = refreshToken;
+  login = (username, accessToken, role) => {
     this.accessToken = accessToken;
     this.setState({ username: username, isAuth: true, role: role });
-    Cookies.set('refresh', refreshToken, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: COOKIES_SECURE });
-    Cookies.set('username', username, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: COOKIES_SECURE });
   }
 
   logout = () => {
-    this.refreshToken = this.accessToken = null;
+    this.accessToken = null;
     this.setState({ username: null, isAuth: false });
-    Cookies.remove('refresh');
-    Cookies.remove('username');
   }
 
-  async refresh_token(username, refreshToken) {
+  async refresh_token() {
+    console.log("refreshing token");
     return new Promise((resolve, reject) => {
       fetch(BASE_URL + '/client/refresh', {
-        method: 'POST',
-        body: JSON.stringify({ username: username }),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${refreshToken}`
-        }
+        method: 'POST'
+        // method: 'POST',
+        // body: JSON.stringify({ username: username }),
+        // headers: {
+        //   'Content-Type': 'application/json',
+        //   'Authorization': `Bearer ${refreshToken}`
+        // }
       })
         .then(res => {
           return res.json();
         })
         .then(data => {
           console.log("Token refresh ", data);
-          Cookies.set("refresh", data.refresh_token, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: COOKIES_SECURE });
-          Cookies.set('username', username, { expires: COOKIES_EXPIRES, sameSite: "Strict", secure: COOKIES_SECURE });
-          resolve({ access_token: data.access_token, refresh_token: data.refresh_token, role: data.role });
+          resolve({ access_token: data.access_token, role: data.role });
         })
         .catch(error => {
-          console.log(error);
+          console.log("Token refersh error", error);
           resolve(null);
         });
     });
