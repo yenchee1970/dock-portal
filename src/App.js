@@ -86,7 +86,10 @@ class App extends Component {
   logout = () => {
     fetch(BASE_URL + '/client/logout', {
       method: 'GET',
-      credentials: 'include'
+      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${this.accessToken}`
+      }
     })
       .finally(() => {
         this.accessToken = null;
