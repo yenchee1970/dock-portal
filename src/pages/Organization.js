@@ -31,7 +31,7 @@ class OrgPage extends Component {
     }
 
     networkError(error) {
-        console.log(error.response);
+        console.error(error.response);
         alert(error.response.data.error);
         if (error.response.status === 401 || error.response.data.error === "Admin role required!") this.context.logout();
     }
@@ -39,7 +39,6 @@ class OrgPage extends Component {
     async loadOrgs() {
         this.setState({ isLoading: true });
         let data = await this.fetchOrgs();
-        console.log("Fetching data is ", data);
         if (this.isActive && data)
             this.setState({ orgs: data.data.result.rows, count: data.data.result.count, isLoading: false });
     }
@@ -136,15 +135,13 @@ class OrgPage extends Component {
     modalCreateHandler = async () => {
         const { realm, name } = this.state;
 
-        let success = await this.createOrg(realm, name);
-        console.log("Creating org is ", success);
+        await this.createOrg(realm, name);
         this.loadOrgs();
         this.modalCancelHandler();
     }
 
     modalDeleteHandler = async () => {
-        let success = await this.deleteOrg(this.state.selectedOrg.id);
-        console.log("Deleting org is ", success);
+        await this.deleteOrg(this.state.selectedOrg.id);
         this.loadOrgs();
         this.modalCancelHandler();
     }
@@ -152,8 +149,7 @@ class OrgPage extends Component {
     modalUpdateHandler = async () => {
         const { selectedOrg, name } = this.state;
 
-        let success = await this.updateOrg(selectedOrg.id, name);
-        console.log("Updating org is ", success);
+        await this.updateOrg(selectedOrg.id, name);
         this.loadOrgs();
         this.modalCancelHandler();
     }

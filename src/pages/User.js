@@ -30,7 +30,7 @@ class UserPage extends Component {
     }
 
     networkError(error) {
-        console.log(error.response);
+        console.error(error.response);
         alert(error.response.data.error);
         if (error.response.status === 401 || error.response.data.error === "Admin role required!") this.context.logout();
     }
@@ -38,7 +38,6 @@ class UserPage extends Component {
     async loadUsers() {
         this.setState({ isLoading: true });
         let data = await this.fetchUsers();
-        console.log("Fetching data is ", data);
         if (this.isActive && data)
             this.setState({ users: data.data.result.rows, count: data.data.result.count, isLoading: false });
     }
@@ -143,15 +142,13 @@ class UserPage extends Component {
             alert("Password Mismatch!");
             return null;
         }
-        let success = await this.createUser(username, password, name, role);
-        console.log("Creating user is ", success);
+        await this.createUser(username, password, name, role);
         this.loadUsers();
         this.modalCancelHandler();
     }
 
     modalDeleteHandler = async () => {
-        let success = await this.deleteUser(this.state.selectedUser.id);
-        console.log("Deleting user is ", success);
+        await this.deleteUser(this.state.selectedUser.id);
         this.loadUsers();
         this.modalCancelHandler();
     }
@@ -163,8 +160,7 @@ class UserPage extends Component {
             alert("Password Mismatch!");
             return null;
         }
-        let success = await this.updateUser(selectedUser.id, password, name, role);
-        console.log("Updating user is ", success);
+        await this.updateUser(selectedUser.id, password, name, role);
         this.loadUsers();
         this.modalCancelHandler();
     }

@@ -32,7 +32,7 @@ class DockPage extends Component {
   }
 
   networkError(error) {
-    console.log(error.response);
+    console.error(error.response);
     alert(error.response.data.error);
     if (error.response.status === 401 || error.response.data.error === "Admin role required!") this.context.logout();
   }
@@ -40,7 +40,7 @@ class DockPage extends Component {
   async loadDocks() {
     this.setState({ isLoading: true });
     let data = await this.fetchDocks();
-    console.log("Fetching data is ", data);
+    // console.log("Fetching data is ", data);
     if (this.isActive && data)
       this.setState({ docks: data.data.result.rows, count: data.data.result.count, isLoading: false });
   }
@@ -154,15 +154,13 @@ class DockPage extends Component {
   modalCreateHandler = async () => {
     const { macaddr, bssid5GL, bssid2G } = this.state;
 
-    let success = await this.createDock(macaddr, bssid5GL, bssid2G);
-    console.log("Creating dock is ", success);
+    await this.createDock(macaddr, bssid5GL, bssid2G);
     this.loadDocks();
     this.modalCancelHandler();
   }
 
   modalDeleteHandler = async () => {
-    let success = await this.deleteDock(this.state.selectedDock.id);
-    console.log("Deleting dock is ", success);
+    await this.deleteDock(this.state.selectedDock.id);
     this.loadDocks();
     this.modalCancelHandler();
   }
@@ -170,17 +168,15 @@ class DockPage extends Component {
   modalUpdateHandler = async () => {
     let unpair = this.state.selectedDock.User && !this.state.paired;
 
-    let success = await this.updateDock(
+    await this.updateDock(
       this.state.selectedDock.id,
       this.state.bssid5GL,
       this.state.ssid5GL,
       this.state.bssid2G,
       this.state.ssid2G
     );
-    console.log("Updating dock is ", success);
     if (unpair) {
-      success = await this.unpairDock(this.state.selectedDock.macaddr);
-      console.log("Unpairing dock is ", success);
+      await this.unpairDock(this.state.selectedDock.macaddr);
     }
     this.loadDocks();
     this.modalCancelHandler();

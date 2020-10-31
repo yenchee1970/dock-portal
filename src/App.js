@@ -69,7 +69,6 @@ class App extends Component {
           this.accessToken = tokens.access_token;
           let decodedToken = JSON.parse(atob(tokens.access_token.split(".")[1]));
           let username = decodedToken.email;
-          console.log("App mount ", username);
           this.setState({ username: username, isAuth: true, role: tokens.role });
         } else {
           this.accessToken = null;
@@ -98,22 +97,18 @@ class App extends Component {
   }
 
   async refresh_token() {
-    console.log("refreshing token");
     return new Promise((resolve, reject) => {
       fetch(BASE_URL + '/client/refresh', {
         method: 'GET',
         credentials: 'include'
       })
         .then(res => {
-          console.log("refresh_token ", res);
           if (res.ok) return res.json(); else throw new Error(res.statusText);
         })
         .then(data => {
-          console.log("Token refresh ", data);
           resolve({ access_token: data.access_token, role: data.role });
         })
-        .catch(error => {
-          console.log("Token refersh error", error);
+        .catch(() => {
           resolve(null);
         });
     });

@@ -61,7 +61,7 @@ class NormalUserPage extends Component {
     }
 
     networkError(error) {
-        console.log(error.response);
+        console.error(error.response);
         alert(error.response.data.error);
         if (error.response.status === 401 || error.response.data.error === "Admin role required!") this.context.logout();
     }

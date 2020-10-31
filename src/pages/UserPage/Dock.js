@@ -30,7 +30,7 @@ class NormalDockPage extends Component {
   }
 
   networkError(error) {
-    console.log(error.response);
+    console.error(error.response);
     alert(error.response.data.error);
     if (error.response.status === 401 || error.response.data.error === "Admin role required!") this.context.logout();
   }
@@ -38,7 +38,6 @@ class NormalDockPage extends Component {
   async loadDocks() {
     this.setState({ isLoading: true });
     let data = await this.fetchDocks();
-    console.log("Fetching data is ", data);
     if (this.isActive && data)
       this.setState({ docks: data.data.result.rows, count: data.data.result.count, isLoading: false });
   }
@@ -99,14 +98,13 @@ class NormalDockPage extends Component {
   }
 
   modalUpdateHandler = async () => {
-    let success = await this.updateDock(
+    await this.updateDock(
       this.state.selectedDock.id,
       this.state.bssid5GL,
       this.state.ssid5GL,
       this.state.bssid2G,
       this.state.ssid2G
     );
-    console.log("Updating dock is ", success);
     this.loadDocks();
     this.modalCancelHandler();
   }
@@ -125,7 +123,7 @@ class NormalDockPage extends Component {
         modalType: type
       });
     }
-    console.log(selectedDock);
+    // console.log(selectedDock);
   }
 
   onInputChange = (e) => {
