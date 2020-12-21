@@ -276,12 +276,20 @@ class DockPage extends Component {
                 <input type="text" id="ssid5GL" name="ssid5GL" value={this.state.ssid5GL} onChange={this.onInputChange} />
               </div>
               <div className="form-control">
+                <label htmlFor="passphrase">Passphrase</label>
+                <input type="text" id="passphrase5G" name="passphrase5G" placeholder="Passphrase" value={this.state.selectedDock.passphrase5GL} disabled={true} />
+              </div>
+              <div className="form-control">
                 <label htmlFor="bssid2G">2.4GHz BSSID</label>
                 <input type="text" id="bssid2G" name="bssid2G" placeholder="MAC address" value={this.state.bssid2G} onChange={this.onInputChange} />
               </div>
               <div className="form-control">
                 <label htmlFor="ssid2G">2.4GHz SSID</label>
                 <input type="text" id="ssid2G" name="ssid2G" value={this.state.ssid2G} onChange={this.onInputChange} />
+              </div>
+              <div className="form-control">
+                <label htmlFor="passphrase">Passphrase</label>
+                <input type="text" id="passphrase2G" name="passphrase2G" placeholder="Passphrase" value={this.state.selectedDock.passphrase2G} disabled={true} />
               </div>
               {(this.state.selectedDock.User && this.state.selectedDock.Organization) &&
                 <div className="dock-owner">
